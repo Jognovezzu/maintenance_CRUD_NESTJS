@@ -10,9 +10,10 @@ export class MaintenanceDto {
 
 export class MaintenanceRes {
     id: number;
-    schedule: Date;
-    start: Date;
+    schedule: string;
+    start_maintenance: string;
+    end_maintenance: string;
     delay: number;
-    finish: Date;
     plant: number;
+    daysleft?: number;
 }

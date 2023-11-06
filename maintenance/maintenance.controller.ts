@@ -3,9 +3,14 @@
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ApiRoutesSwagger, ControllerAndSwagger, message } from 'common';
 import { MaintenanceService } from './maintenance.service';
-import { Get, Param, Post, Body, Patch } from '@nestjs/common';
-import { MaintenanceCreateDto } from './maintenance-create.dto';
+import { Get, Param, Post, Body, Patch, Headers } from '@nestjs/common';
+import {
+    MaintenanceCreateDto,
+    MaintenanceUpdateDto,
+} from './maintenance-create.dto';
 import { SwaggerMaintenanceRoute } from 'common/constant/swagger/route/swagger.maintenance.routes.constants';
+import { Language } from 'common/util/types/language.type';
+import { MaintenanceRes } from './maintenance.dto';
 
 @ApiBearerAuth()
 @ControllerAndSwagger('maintenance')
@@ -21,8 +26,10 @@ export class MaintenanceController {
      * This method is responsible for getting all maintenances ordered by end_maintenance and schedule
      *
      */
-    async getAll(): Promise<any> {
-        return await this.maintenanceService.getAll();
+    async getAll(
+        @Headers('Accept-Language') language: string,
+    ): Promise<MaintenanceRes[]> {
+        return await this.maintenanceService.getAll(new Language(language));
     }
 
     @Post()
@@ -49,11 +56,13 @@ export class MaintenanceController {
     /*
      * @returns number
      * @description
-     * This method is responsible for getting days left to next maintenance
+     * This method is responsible for getting data of next maintenance
      *
      */
-    async daysleft(): Promise<number> {
-        return await this.maintenanceService.daysleft();
+    async daysleft(
+        @Headers('Accept-Language') language: string,
+    ): Promise<MaintenanceRes | 0> {
+        return await this.maintenanceService.daysleft(new Language(language));
     }
 
     @Post(':id/start')
@@ -103,10 +112,9 @@ export class MaintenanceController {
      *    schedule: Date (example: '2021-05-29')
      *
      */
-
     async update(
         @Param('id') id: number,
-        @Body() data: MaintenanceCreateDto,
+        @Body() data: MaintenanceUpdateDto,
     ): Promise<message> {
         return await this.maintenanceService.update(id, data);
     }

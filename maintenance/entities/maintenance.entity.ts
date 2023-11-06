@@ -1,9 +1,12 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('maintenance')
 export class Maintenance {
     @PrimaryGeneratedColumn()
     id: number;
+
+    @Column()
+    created_at: Date;
 
     @Column()
     schedule: Date;
